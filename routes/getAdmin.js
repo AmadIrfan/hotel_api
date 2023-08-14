@@ -3,30 +3,30 @@ const router = express.Router();
 const { admin } = require('../db/schema');
 const { db } = require('../db/db');
 
-router.post('/', (req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
-
-    admin.find({ email: email, password: password }).then(result => {
-        if (result) {
-            result.forEach((e) => {
-                if (e.email === email && e.password === password) {
-
-                    console.log(result)
-                    res.redirect('http://localhost:3000/home');
-                    return;
-                }
-                else {
-                    console.log('User Not Founded')
-                    res.redirect('http://localhost:3000/');
-                    return;
-                }
-            })
+router.post('/login',async (req, res) => {
+    
+    const { email, password } = req.body;
+    try {
+        const myUser = await user.findOne({ email })
+        console.log(myUser);
+        if (!myUser) {
+            res.status(404).json({ status: 'error', message: 'User not found' });
+            console.log(myUser)
         }
-    })
-
+        else if (password === myUser.password) {
+            const token = jwt.sign({ userId: user._id, email: user.email, name: user.name }, 'secretKey', { expiresIn: '1h' });
+            res.status(200).json({ message: 'Log in Successful', status: 'ok', user: myUser, token: token, });
+            console.log('Log in Successful')
+        }
+        else {
+            res.status(500).json({ status: 'error', message: 'Email or password is incorrect' });
+            console.log('Email or password is incorrect')
+        }
+    } catch (err) {
+        res.json(500).json({ status: 'error', message: 'Internal server error' });
+    }
 })
-router.post('/', (req, res) => {
+router.post('/register', (req, res) => {
     let name = req.body.name;
     let email = req.body.email;
     let password = req.body.password;
