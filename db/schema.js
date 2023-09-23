@@ -96,10 +96,6 @@ const employees = mongoose.model('employees', {
         type: String,
         required: true,
     },
-    salary: {
-        type: String,
-        required: true,
-    },
     type: {
         type: String,
         required: true,
