@@ -9,10 +9,12 @@ router.get("/", (req, res) => {
 });
 
 router.get("/", (req, res) => {
+
 	var { email, password } = req.body;
 	user.find({ email: email, password: password }).then((result) => {
 		res.send(result);
 	});
+
 });
 
 module.exports = router;
